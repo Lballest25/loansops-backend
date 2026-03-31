@@ -58,7 +58,7 @@ jobs:
 
       - name: Build Lambda Layers
         run: bash scripts/build_layers.sh
-        working-directory: loansops-backend
+        working-directory: ${{ github.workspace }}
 
       - name: Set up Node.js (for Serverless Framework)
         uses: actions/setup-node@v4
