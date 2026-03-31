@@ -1,0 +1,40 @@
+patch:
+  summary: Change loan status.
+  description: Updates the status of a loan. ADMIN only.
+  tags:
+    - Loans
+  parameters:
+    - in: path
+      name: loan_id
+      required: true
+      schema:
+        type: string
+      description: UUID of the loan.
+  requestBody:
+    description: New status.
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: './schema.json'
+  responses:
+    '200':
+      description: Status updated successfully.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Loan status updated to 'ACTIVE'"
+    '400':
+      description: Missing or invalid status.
+    '401':
+      description: Unauthorized.
+    '403':
+      description: Forbidden – ADMIN only.
+    '404':
+      description: Loan not found.
+    '500':
+      description: Internal server error.

@@ -1,0 +1,9 @@
+handler: src/loans/post_loan/handler.lambda_handler
+description: Creates a new loan (ADMIN, ANALYST)
+events:
+  - http:
+      path: loans
+      method: post
+      authorizer:
+        type: COGNITO_USER_POOLS
+        authorizerId: !Ref ApiGatewayAuthorizer

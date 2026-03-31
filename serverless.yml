@@ -1,0 +1,214 @@
+org: cuccu
+service: loansops-backend
+
+# -- Provider --------------------------------------------------
+provider:
+  name: aws
+  runtime: python3.12
+  region: ${opt:region, 'us-east-1'}
+  stage: ${opt:stage, 'dev'}
+  memorySize: 256
+  timeout: 10
+
+  environment:
+    DB_HOST:              ${ssm:/loansops/${self:provider.stage}/db/host}
+    DB_USER:              ${ssm:/loansops/${self:provider.stage}/db/user}
+    DB_PASSWORD:          ${ssm:/loansops/${self:provider.stage}/db/password}
+    DB_DATABASE:          ${ssm:/loansops/${self:provider.stage}/db/name}
+    DB_PORT:              "3306"
+    DB_POOL_SIZE:         "5"
+    BUCKET_DOCUMENTS:     ${ssm:/loansops/${self:provider.stage}/s3/documents_bucket}
+    COGNITO_USER_POOL_ID: ${ssm:/loansops/${self:provider.stage}/cognito/user_pool_id}
+    COGNITO_CLIENT_ID:    ${ssm:/loansops/${self:provider.stage}/cognito/client_id}
+    FUNCTION_NAME_COGNITO: ${ssm:/loansops/${self:provider.stage}/lambda/create_cognito_user}
+    SENDER_EMAIL:         ${ssm:/loansops/${self:provider.stage}/email/sender}
+    SENDER_PASSWORD:      ${ssm:/loansops/${self:provider.stage}/email/password}
+    TWILIO_ACCOUNT_SID:   ${ssm:/loansops/${self:provider.stage}/twilio/account_sid}
+    TWILIO_AUTH_TOKEN:    ${ssm:/loansops/${self:provider.stage}/twilio/auth_token}
+    TWILIO_WHATSAPP_FROM: ${ssm:/loansops/${self:provider.stage}/twilio/whatsapp_from}
+
+  # Default layers attached to every function
+  layers:
+    - { Ref: DependenciesLambdaLayer }
+    - { Ref: SharedLambdaLayer }
+
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - s3:PutObject
+            - s3:GetObject
+            - s3:DeleteObject
+          Resource:
+            - arn:aws:s3:::${ssm:/loansops/${self:provider.stage}/s3/documents_bucket}/*
+        - Effect: Allow
+          Action:
+            - cognito-idp:AdminCreateUser
+            - cognito-idp:AdminSetUserPassword
+            - cognito-idp:AdminGetUser
+            - cognito-idp:AdminDeleteUser
+          Resource: !GetAtt CognitoUserPool.Arn
+        - Effect: Allow
+          Action:
+            - lambda:InvokeFunction
+          Resource:
+             - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${AWS::StackName}-createCognitoUser"
+        - Effect: Allow
+          Action:
+            - ssm:GetParameter
+          Resource:
+            - !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/loansops/${self:provider.stage}/*"
+
+# -- Package ---------------------------------------------------
+package:
+  individually: true
+  patterns:
+    - "!venv/**"
+    - "!.venv/**"
+    - "!node_modules/**"
+    - "!.git/**"
+    - "!tests/**"
+    - "!*.md"
+    - "!.env"
+    - "!layers/**"
+    - "!scripts/**"
+    - "!shared/**"
+
+# -- Layers ----------------------------------------------------
+layers:
+  dependencies:
+    path: layers/dependencies
+    name: loansops-dependencies-${self:provider.stage}
+    description: Python dependencies (mysql-connector, boto3, twilio, etc.)
+    compatibleRuntimes:
+      - python3.12
+    retain: false
+
+  shared:
+    path: layers/shared
+    name: loansops-shared-${self:provider.stage}
+    description: Shared module (db_config, utils, decorators, constants)
+    compatibleRuntimes:
+      - python3.12
+    retain: false
+
+# -- Functions -------------------------------------------------
+functions:
+  # Users
+  postUser:           ${file(src/users/post_user/serverless.yml)}
+  getUsers:           ${file(src/users/get_users/serverless.yml)}
+  getUser:            ${file(src/users/get_user/serverless.yml)}
+  putUser:            ${file(src/users/put_user/serverless.yml)}
+
+  # Loans
+  postLoan:           ${file(src/loans/post_loan/serverless.yml)}
+  getLoans:           ${file(src/loans/get_loans/serverless.yml)}
+  getLoan:            ${file(src/loans/get_loan/serverless.yml)}
+  putLoan:            ${file(src/loans/put_loan/serverless.yml)}
+  patchLoanStatus:    ${file(src/loans/patch_loan_status/serverless.yml)}
+
+  # Documents
+  postDocumentUrl:    ${file(src/documents/post_document_url/serverless.yml)}
+  getDocumentUrl:     ${file(src/documents/get_document_url/serverless.yml)}
+  getDocuments:       ${file(src/documents/get_documents/serverless.yml)}
+
+  # Notifications
+  sendNotification:   ${file(src/notifications/send_notification/serverless.yml)}
+
+  # Cron
+  paymentReminders:   ${file(src/cron/payment_reminders/serverless.yml)}
+
+  # Cognito (internal)
+  createCognitoUser:  ${file(src/cognito/create_cognito_user/serverless.yml)}
+
+# -- Resources -------------------------------------------------
+resources:
+  Resources:
+
+    CognitoUserPool:
+      Type: AWS::Cognito::UserPool
+      Properties:
+        UserPoolName: loansops-${self:provider.stage}
+        UsernameAttributes:
+          - email
+        AutoVerifiedAttributes:
+          - email
+        PasswordPolicy:
+          MinimumLength: 8
+          RequireUppercase: true
+          RequireLowercase: true
+          RequireNumbers: true
+          RequireSymbols: false
+        Schema:
+          - Name: email
+            AttributeDataType: String
+            Required: true
+            Mutable: true
+          - Name: user_id
+            AttributeDataType: String
+            Required: false
+            Mutable: true
+
+    CognitoUserPoolClient:
+      Type: AWS::Cognito::UserPoolClient
+      Properties:
+        ClientName: loansops-client-${self:provider.stage}
+        UserPoolId: !Ref CognitoUserPool
+        ExplicitAuthFlows:
+          - ALLOW_USER_PASSWORD_AUTH
+          - ALLOW_REFRESH_TOKEN_AUTH
+        GenerateSecret: false
+        AccessTokenValidity: 1
+        IdTokenValidity: 1
+        RefreshTokenValidity: 30
+        TokenValidityUnits:
+          AccessToken: hours
+          IdToken: hours
+          RefreshToken: days
+
+    ApiGatewayAuthorizer:
+      Type: AWS::ApiGateway::Authorizer
+      Properties:
+        Name: loansops-authorizer-${self:provider.stage}
+        Type: COGNITO_USER_POOLS
+        RestApiId: !Ref ApiGatewayRestApi
+        IdentitySource: method.request.header.Authorization
+        ProviderARNs:
+          - !GetAtt CognitoUserPool.Arn
+
+    DocumentsBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${ssm:/loansops/${self:provider.stage}/s3/documents_bucket}
+        CorsConfiguration:
+          CorsRules:
+            - AllowedHeaders:
+                - "*"
+              AllowedMethods:
+                - PUT
+                - GET
+              AllowedOrigins:
+                - "*"
+              MaxAge: 3000
+        PublicAccessBlockConfiguration:
+          BlockPublicAcls: true
+          BlockPublicPolicy: true
+          IgnorePublicAcls: true
+          RestrictPublicBuckets: true
+
+  Outputs:
+    UserPoolId:
+      Value: !Ref CognitoUserPool
+      Export:
+        Name: loansops-${self:provider.stage}-UserPoolId
+
+    UserPoolClientId:
+      Value: !Ref CognitoUserPoolClient
+      Export:
+        Name: loansops-${self:provider.stage}-UserPoolClientId
+
+    ApiGatewayUrl:
+      Value: !Sub "https://${ApiGatewayRestApi}.execute-api.${AWS::Region}.amazonaws.com/${self:provider.stage}"
+      Export:
+        Name: loansops-${self:provider.stage}-ApiGatewayUrl

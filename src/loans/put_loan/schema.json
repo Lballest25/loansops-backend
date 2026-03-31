@@ -1,0 +1,13 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "amount":            { "type": "number", "minimum": 0.01 },
+        "interest_rate":     { "type": "number", "minimum": 0, "maximum": 100 },
+        "start_date":        { "type": "string", "format": "date" },
+        "due_date":          { "type": "string", "format": "date" },
+        "next_payment_date": { "type": "string", "format": "date" }
+    },
+    "minProperties": 1,
+    "additionalProperties": false
+}

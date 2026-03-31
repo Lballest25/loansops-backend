@@ -1,0 +1,30 @@
+get:
+  summary: Get a user by ID.
+  description: Returns a single user. CLIENTs can only view their own profile.
+  tags:
+    - Users
+  parameters:
+    - in: path
+      name: user_id
+      required: true
+      schema:
+        type: string
+      description: UUID of the user.
+  responses:
+    '200':
+      description: User details.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              user:
+                type: object
+    '401':
+      description: Unauthorized.
+    '403':
+      description: Forbidden – clients can only view their own profile.
+    '404':
+      description: User not found.
+    '500':
+      description: Internal server error.

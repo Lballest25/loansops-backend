@@ -1,0 +1,9 @@
+handler: src/documents/post_document_url/handler.lambda_handler
+description: Generates a presigned PUT URL to upload a document to S3
+events:
+  - http:
+      path: loans/{loan_id}/documents/upload-url
+      method: post
+      authorizer:
+        type: COGNITO_USER_POOLS
+        authorizerId: !Ref ApiGatewayAuthorizer

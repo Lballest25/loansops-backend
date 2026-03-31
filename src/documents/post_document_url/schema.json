@@ -1,0 +1,14 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "document_type": {
+            "type": "string",
+            "enum": ["PAYMENT_RECEIPT", "CONTRACT", "ID_VERIFICATION", "OTHER"]
+        },
+        "file_name":    { "type": "string" },
+        "content_type": { "type": "string", "example": "application/pdf" }
+    },
+    "required": ["document_type", "file_name"],
+    "additionalProperties": false
+}

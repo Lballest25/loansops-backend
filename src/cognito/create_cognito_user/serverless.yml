@@ -1,0 +1,2 @@
+handler: src/cognito/create_cognito_user/handler.lambda_handler
+description: Internal Lambda — creates a user in Cognito User Pool (not exposed via API Gateway)

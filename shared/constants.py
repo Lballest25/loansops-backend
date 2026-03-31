@@ -1,0 +1,60 @@
+# ── HTTP Status Codes ──────────────────────────────────────────
+STATUS_OK = 200
+STATUS_CREATED_SUCCESS = 201
+STATUS_NO_CONTENT = 204
+STATUS_BAD_REQUEST = 400
+STATUS_UNAUTHORIZED = 401
+STATUS_FORBIDDEN = 403
+STATUS_NOT_FOUND = 404
+STATUS_METHOD_NOT_ALLOWED = 405
+STATUS_UNPROCESSABLE_ENTITY = 422
+STATUS_SERVER_ERROR = 500
+STATUS_BAD_GATEWAY = 502
+STATUS_SERVICE_UNAVAILABLE = 503
+STATUS_GATEWAY_TIMEOUT = 504
+
+# ── User Roles ─────────────────────────────────────────────────
+ADMIN_ROLE = "ADMIN"
+ANALYST_ROLE = "ANALYST"
+CLIENT_ROLE = "CLIENT"
+
+ALL_ROLES = [ADMIN_ROLE, ANALYST_ROLE, CLIENT_ROLE]
+STAFF_ROLES = [ADMIN_ROLE, ANALYST_ROLE]
+
+# ── User Keys ──────────────────────────────────────────────────
+KEYS_USER = ("user_name", "email", "role", "identification")
+
+# ── Loan Statuses ──────────────────────────────────────────────
+LOAN_STATUS_PENDING = "PENDING"
+LOAN_STATUS_ACTIVE = "ACTIVE"
+LOAN_STATUS_PAID = "PAID"
+LOAN_STATUS_OVERDUE = "OVERDUE"
+LOAN_STATUS_CANCELLED = "CANCELLED"
+
+LOAN_STATUSES = [
+    LOAN_STATUS_PENDING,
+    LOAN_STATUS_ACTIVE,
+    LOAN_STATUS_PAID,
+    LOAN_STATUS_OVERDUE,
+    LOAN_STATUS_CANCELLED,
+]
+
+# ── Document Types ─────────────────────────────────────────────
+DOC_TYPE_PAYMENT_RECEIPT = "PAYMENT_RECEIPT"
+DOC_TYPE_CONTRACT = "CONTRACT"
+DOC_TYPE_ID_VERIFICATION = "ID_VERIFICATION"
+DOC_TYPE_OTHER = "OTHER"
+
+DOCUMENT_TYPES = [
+    DOC_TYPE_PAYMENT_RECEIPT,
+    DOC_TYPE_CONTRACT,
+    DOC_TYPE_ID_VERIFICATION,
+    DOC_TYPE_OTHER,
+]
+
+# ── Presigned URL Expiration (seconds) ─────────────────────────
+PRESIGNED_PUT_EXPIRATION = 900   # 15 min para subir
+PRESIGNED_GET_EXPIRATION = 3600  # 1 hora para descargar
+
+# ── Reminder Config ────────────────────────────────────────────
+REMINDER_DAYS_BEFORE = 7

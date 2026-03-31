@@ -1,0 +1,47 @@
+get:
+  summary: Generate a presigned GET URL to download a document.
+  description: >
+    Returns a presigned S3 GET URL valid for 1 hour.
+    The client downloads the file directly from S3.
+    CLIENTs can only download documents from their own loans.
+  tags:
+    - Documents
+  parameters:
+    - in: path
+      name: loan_id
+      required: true
+      schema:
+        type: string
+      description: UUID of the loan.
+    - in: path
+      name: document_id
+      required: true
+      schema:
+        type: string
+      description: UUID of the document.
+  responses:
+    '200':
+      description: Presigned download URL generated.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              document_id:
+                type: string
+              download_url:
+                type: string
+                example: "https://bucket.s3.amazonaws.com/documents/..."
+              document_type:
+                type: string
+              expires_in:
+                type: integer
+                example: 3600
+    '401':
+      description: Unauthorized.
+    '403':
+      description: Forbidden – clients can only download their own documents.
+    '404':
+      description: Document not found.
+    '500':
+      description: Internal server error.

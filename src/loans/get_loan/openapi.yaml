@@ -1,0 +1,30 @@
+get:
+  summary: Get a loan by ID.
+  description: Returns a single loan. CLIENTs can only view their own loans.
+  tags:
+    - Loans
+  parameters:
+    - in: path
+      name: loan_id
+      required: true
+      schema:
+        type: string
+      description: UUID of the loan.
+  responses:
+    '200':
+      description: Loan details.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              loan:
+                type: object
+    '401':
+      description: Unauthorized.
+    '403':
+      description: Forbidden – clients can only view their own loans.
+    '404':
+      description: Loan not found.
+    '500':
+      description: Internal server error.

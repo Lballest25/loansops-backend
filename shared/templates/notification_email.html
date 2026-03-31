@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Notificación – LoanOps</title>
+  <style>
+    body { margin:0; padding:0; background:#f4f6f9; font-family:Arial,sans-serif; }
+    .wrapper { max-width:600px; margin:40px auto; background:#ffffff;
+               border-radius:8px; overflow:hidden;
+               box-shadow:0 2px 8px rgba(0,0,0,.08); }
+    .header  { background:#1a73e8; padding:32px 40px; text-align:center; }
+    .header h1 { color:#fff; margin:0; font-size:24px; }
+    .body    { padding:32px 40px; color:#333; }
+    .body p  { line-height:1.6; margin:0 0 16px; }
+    .message-box { background:#f0f4ff; border-left:4px solid #1a73e8;
+                   padding:16px 20px; border-radius:4px; margin:24px 0;
+                   font-size:16px; color:#333; }
+    .footer  { background:#f4f6f9; padding:20px 40px; text-align:center;
+               font-size:12px; color:#999; }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="header">
+      <h1>LoanOps – Notificación</h1>
+    </div>
+    <div class="body">
+      <p>Hola <strong>{{user_name}}</strong>,</p>
+      <div class="message-box">{{message}}</div>
+      <p>Para cualquier consulta comunícate con tu asesor.</p>
+      <p>Gracias por tu confianza,<br/><strong>El equipo de LoanOps</strong></p>
+    </div>
+    <div class="footer">
+      Este es un mensaje automático, por favor no respondas a este correo.
+      &copy; 2025 LoanOps. Todos los derechos reservados.
+    </div>
+  </div>
+</body>
+</html>

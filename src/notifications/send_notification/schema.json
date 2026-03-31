@@ -1,0 +1,16 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "user_id": { "type": "string" },
+        "message": { "type": "string" },
+        "subject": { "type": "string" },
+        "channel": {
+            "type": "string",
+            "enum": ["email", "whatsapp", "both"],
+            "default": "both"
+        }
+    },
+    "required": ["user_id", "message"],
+    "additionalProperties": false
+}

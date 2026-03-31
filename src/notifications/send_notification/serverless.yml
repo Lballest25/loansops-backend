@@ -1,0 +1,9 @@
+handler: src/notifications/send_notification/handler.lambda_handler
+description: Sends a manual notification via email, WhatsApp, or both (ADMIN only)
+events:
+  - http:
+      path: notifications/send
+      method: post
+      authorizer:
+        type: COGNITO_USER_POOLS
+        authorizerId: !Ref ApiGatewayAuthorizer

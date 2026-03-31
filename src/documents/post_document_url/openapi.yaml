@@ -1,0 +1,50 @@
+post:
+  summary: Generate a presigned PUT URL for document upload.
+  description: >
+    Returns a presigned S3 PUT URL. The client uploads the file
+    directly to S3 using this URL — no file bytes pass through Lambda.
+    Document metadata is saved in MySQL immediately.
+  tags:
+    - Documents
+  parameters:
+    - in: path
+      name: loan_id
+      required: true
+      schema:
+        type: string
+      description: UUID of the loan the document belongs to.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: './schema.json'
+  responses:
+    '201':
+      description: Presigned URL generated successfully.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              document_id:
+                type: string
+                example: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+              upload_url:
+                type: string
+                example: "https://bucket.s3.amazonaws.com/documents/..."
+              s3_key:
+                type: string
+              expires_in:
+                type: integer
+                example: 900
+    '400':
+      description: Missing or invalid fields.
+    '401':
+      description: Unauthorized.
+    '403':
+      description: Forbidden – insufficient role.
+    '404':
+      description: Loan not found.
+    '500':
+      description: Internal server error.

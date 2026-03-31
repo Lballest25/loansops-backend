@@ -1,0 +1,53 @@
+post:
+  summary: Create a new user.
+  description: This endpoint creates a user in the database with the provided data.
+  tags:
+    - Users
+  requestBody:
+    description: Required data to create a user.
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: './schema.json'
+  responses:
+    '201':
+      description: User successfully created.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "User and store created successfully."
+    '400':
+      description: Invalid request (missing or incorrect data).
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Missing required fields: user_name, email."
+    '401':
+      description: Unauthorized.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Unauthorized."
+    '500':
+      description: Internal server error.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Failed to create the user."

@@ -1,0 +1,9 @@
+handler: src/loans/put_loan/handler.lambda_handler
+description: Updates loan fields (ADMIN, ANALYST)
+events:
+  - http:
+      path: loans/{loan_id}
+      method: put
+      authorizer:
+        type: COGNITO_USER_POOLS
+        authorizerId: !Ref ApiGatewayAuthorizer

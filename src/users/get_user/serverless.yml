@@ -1,0 +1,9 @@
+handler: src/users/get_user/handler.lambda_handler
+description: Gets a single user by ID (ADMIN, ANALYST, CLIENT own profile)
+events:
+  - http:
+      path: users/{user_id}
+      method: get
+      authorizer:
+        type: COGNITO_USER_POOLS
+        authorizerId: !Ref ApiGatewayAuthorizer

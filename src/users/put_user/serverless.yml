@@ -1,0 +1,9 @@
+handler: src/users/put_user/handler.lambda_handler
+description: Updates a user by ID (ADMIN only)
+events:
+  - http:
+      path: users/{user_id}
+      method: put
+      authorizer:
+        type: COGNITO_USER_POOLS
+        authorizerId: !Ref ApiGatewayAuthorizer

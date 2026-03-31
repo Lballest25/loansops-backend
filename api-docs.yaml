@@ -1,0 +1,37 @@
+﻿openapi: 3.0.3
+info:
+  title: My Service API
+  description: API documentation for JR-aires service.
+  version: 1.0.0
+servers:
+  - url: https://1z1kluq5a6.execute-api.us-east-1.amazonaws.com/prod
+    description: Production server
+  - url: https://1z1kluq5a6.execute-api.us-east-1.amazonaws.com/dev
+    description: Staging server
+paths:
+  /users/register:
+    $ref: './src/users/post_user/openapi.yaml'
+  /users:
+    $ref: './src/users/get_users/openapi.yaml'
+  /users/{user_id}:
+    $ref: './src/users/get_user/openapi.yaml'
+  /users/{user_id}/update:
+    $ref: './src/users/put_user/openapi.yaml'
+  /loans:
+    $ref: './src/loans/post_loan/openapi.yaml'
+  /loans/list:
+    $ref: './src/loans/get_loans/openapi.yaml'
+  /loans/{loan_id}:
+    $ref: './src/loans/get_loan/openapi.yaml'
+  /loans/{loan_id}/update:
+    $ref: './src/loans/put_loan/openapi.yaml'
+  /loans/{loan_id}/status:
+    $ref: './src/loans/patch_loan_status/openapi.yaml'
+  /loans/{loan_id}/documents/upload-url:
+    $ref: './src/documents/post_document_url/openapi.yaml'
+  /loans/{loan_id}/documents/{document_id}/download-url:
+    $ref: './src/documents/get_document_url/openapi.yaml'
+  /loans/{loan_id}/documents:
+    $ref: './src/documents/get_documents/openapi.yaml'
+  /notifications/send:
+    $ref: './src/notifications/send_notification/openapi.yaml'

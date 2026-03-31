@@ -1,0 +1,48 @@
+put:
+  summary: Update a user by ID.
+  description: Updates allowed fields of an existing user. Only ADMIN can perform this action.
+  tags:
+    - Users
+  parameters:
+    - in: path
+      name: user_id
+      required: true
+      schema:
+        type: string
+      description: UUID of the user to update.
+  requestBody:
+    description: Fields to update.
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: './schema.json'
+  responses:
+    '200':
+      description: User updated successfully.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "User updated successfully"
+    '400':
+      description: No valid fields provided.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "No valid fields provided for update"
+    '401':
+      description: Unauthorized.
+    '403':
+      description: Forbidden – insufficient role.
+    '404':
+      description: User not found.
+    '500':
+      description: Internal server error.

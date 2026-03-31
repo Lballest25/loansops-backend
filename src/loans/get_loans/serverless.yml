@@ -1,0 +1,9 @@
+handler: src/loans/get_loans/handler.lambda_handler
+description: Lists loans (ADMIN/ANALYST see all; CLIENT sees own loans)
+events:
+  - http:
+      path: loans
+      method: get
+      authorizer:
+        type: COGNITO_USER_POOLS
+        authorizerId: !Ref ApiGatewayAuthorizer

@@ -1,0 +1,9 @@
+handler: src/loans/patch_loan_status/handler.lambda_handler
+description: Changes loan status (ADMIN only)
+events:
+  - http:
+      path: loans/{loan_id}/status
+      method: patch
+      authorizer:
+        type: COGNITO_USER_POOLS
+        authorizerId: !Ref ApiGatewayAuthorizer

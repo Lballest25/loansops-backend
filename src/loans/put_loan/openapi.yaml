@@ -1,0 +1,40 @@
+put:
+  summary: Update a loan by ID.
+  description: Updates allowed loan fields. Accessible by ADMIN and ANALYST.
+  tags:
+    - Loans
+  parameters:
+    - in: path
+      name: loan_id
+      required: true
+      schema:
+        type: string
+      description: UUID of the loan.
+  requestBody:
+    description: Fields to update.
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: './schema.json'
+  responses:
+    '200':
+      description: Loan updated successfully.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Loan updated successfully"
+    '400':
+      description: No valid fields provided.
+    '401':
+      description: Unauthorized.
+    '403':
+      description: Forbidden – insufficient role.
+    '404':
+      description: Loan not found.
+    '500':
+      description: Internal server error.

@@ -1,0 +1,9 @@
+handler: src/users/get_users/handler.lambda_handler
+description: Lists users with optional filters (ADMIN, ANALYST)
+events:
+  - http:
+      path: users
+      method: get
+      authorizer:
+        type: COGNITO_USER_POOLS
+        authorizerId: !Ref ApiGatewayAuthorizer

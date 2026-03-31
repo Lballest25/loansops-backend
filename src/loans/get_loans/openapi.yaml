@@ -1,0 +1,45 @@
+get:
+  summary: List loans.
+  description: Returns a paginated list of loans. CLIENTs only see their own loans.
+  tags:
+    - Loans
+  parameters:
+    - in: query
+      name: status
+      required: false
+      schema:
+        type: string
+        enum: [PENDING, ACTIVE, PAID, OVERDUE, CANCELLED]
+      description: Filter by loan status.
+    - in: query
+      name: limit
+      required: false
+      schema:
+        type: integer
+        default: 50
+    - in: query
+      name: offset
+      required: false
+      schema:
+        type: integer
+        default: 0
+  responses:
+    '200':
+      description: List of loans.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              loans:
+                type: array
+                items:
+                  type: object
+              count:
+                type: integer
+    '401':
+      description: Unauthorized.
+    '403':
+      description: Forbidden – insufficient role.
+    '500':
+      description: Internal server error.

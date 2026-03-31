@@ -1,0 +1,7 @@
+handler: src/cron/payment_reminders/handler.lambda_handler
+description: Daily cron — sends payment reminders 7 days before next_payment_date
+events:
+  - schedule:
+      rate: cron(0 9 * * ? *)
+      enabled: true
+      description: "Runs every day at 9:00 AM UTC"

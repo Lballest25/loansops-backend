@@ -1,0 +1,9 @@
+handler: src/documents/get_document_url/handler.lambda_handler
+description: Generates a presigned GET URL to download a document from S3
+events:
+  - http:
+      path: loans/{loan_id}/documents/{document_id}/download-url
+      method: get
+      authorizer:
+        type: COGNITO_USER_POOLS
+        authorizerId: !Ref ApiGatewayAuthorizer

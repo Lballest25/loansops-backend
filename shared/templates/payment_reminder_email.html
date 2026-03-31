@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Recordatorio de pago – LoanOps</title>
+  <style>
+    body { margin:0; padding:0; background:#f4f6f9; font-family:Arial,sans-serif; }
+    .wrapper { max-width:600px; margin:40px auto; background:#ffffff;
+               border-radius:8px; overflow:hidden;
+               box-shadow:0 2px 8px rgba(0,0,0,.08); }
+    .header  { background:#1a73e8; padding:32px 40px; text-align:center; }
+    .header h1 { color:#fff; margin:0; font-size:24px; }
+    .body    { padding:32px 40px; color:#333; }
+    .body p  { line-height:1.6; margin:0 0 16px; }
+    .amount-box { background:#f0f4ff; border-left:4px solid #1a73e8;
+                  padding:16px 20px; border-radius:4px; margin:24px 0; }
+    .amount-box .label { font-size:12px; color:#666; text-transform:uppercase; }
+    .amount-box .value { font-size:28px; font-weight:700; color:#1a73e8; }
+    .detail-row { display:flex; justify-content:space-between;
+                  padding:8px 0; border-bottom:1px solid #eee; font-size:14px; }
+    .footer  { background:#f4f6f9; padding:20px 40px; text-align:center;
+               font-size:12px; color:#999; }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="header">
+      <h1>LoanOps – Recordatorio de Pago</h1>
+    </div>
+    <div class="body">
+      <p>Hola <strong>{{user_name}}</strong>,</p>
+      <p>
+        Te recordamos que tienes un pago programado en
+        <strong>{{days_before}} días</strong>.
+        Por favor asegúrate de tener los fondos disponibles para evitar cargos por mora.
+      </p>
+
+      <div class="amount-box">
+        <div class="label">Próximo pago</div>
+        <div class="value">{{currency}} {{amount}}</div>
+      </div>
+
+      <div class="detail-row">
+        <span>Préstamo ID</span>
+        <span><strong>{{loan_id}}</strong></span>
+      </div>
+      <div class="detail-row">
+        <span>Tasa de interés</span>
+        <span><strong>{{interest_rate}}%</strong></span>
+      </div>
+      <div class="detail-row">
+        <span>Fecha de pago</span>
+        <span><strong>{{next_payment_date}}</strong></span>
+      </div>
+      <div class="detail-row">
+        <span>Fecha de vencimiento final</span>
+        <span><strong>{{due_date}}</strong></span>
+      </div>
+
+      <p style="margin-top:24px;">
+        Si ya realizaste tu pago, ignora este mensaje.
+        Para cualquier consulta comunícate con tu asesor.
+      </p>
+      <p>Gracias por tu confianza,<br/><strong>El equipo de LoanOps</strong></p>
+    </div>
+    <div class="footer">
+      Este es un mensaje automático, por favor no respondas a este correo.
+      &copy; 2025 LoanOps. Todos los derechos reservados.
+    </div>
+  </div>
+</body>
+</html>
