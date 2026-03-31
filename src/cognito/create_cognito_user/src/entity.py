@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 
 class CreateCognitoUser:
-    def __init__(self):
+    def __init__(self) -> None:
         self.client = boto3.client("cognito-idp")
         self.user_pool_id = os.environ["COGNITO_USER_POOL_ID"]
 
@@ -37,7 +37,8 @@ class CreateCognitoUser:
 
         if not all([email, user_name, password, user_id]):
             return STATUS_BAD_REQUEST, {
-                "message": "Fields 'email', 'user_name', 'password', 'user_id' are required"
+                "message": "Fields 'email', 'user_name',"
+                " 'password', 'user_id' are required"
             }
 
         try:

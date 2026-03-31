@@ -15,14 +15,16 @@ class SharedQueries:
         This method will get a user from the database.
 
         args:
-            email (int): The email of the user.
+            email (str): The email of the user.
             conn (DatabaseConnection): The database connection object.
 
         Returns:
             dict: The user details if found.
             None: If the user is not found.
         """
-        query: str = self.get_user.query
-        params = {"email": email}
+        query: str = self.get_user.query  # type: ignore[attr-defined]
+        params = (email,)
         resp = conn.execute_query(query, params)
-        return resp[0] if len(resp) > 0 else None
+        if resp and len(resp) > 0:
+            return resp[0]
+        return None

@@ -53,7 +53,7 @@ DOCUMENT_TYPES = [
 ]
 
 # ── Presigned URL Expiration (seconds) ─────────────────────────
-PRESIGNED_PUT_EXPIRATION = 900   # 15 min para subir
+PRESIGNED_PUT_EXPIRATION = 900  # 15 min para subir
 PRESIGNED_GET_EXPIRATION = 3600  # 1 hora para descargar
 
 # ── Reminder Config ────────────────────────────────────────────

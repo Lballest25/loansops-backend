@@ -34,7 +34,10 @@ class GetLoan:
         session_role = self.session_user.get("role")
         session_user_id = self.session_user.get("user_id")
 
-        if session_role == CLIENT_ROLE and record["user_id"] != session_user_id:
+        if (
+            session_role == CLIENT_ROLE
+            and record["user_id"] != session_user_id
+        ):
             return STATUS_FORBIDDEN, {
                 "message": "Clients can only view their own loans"
             }

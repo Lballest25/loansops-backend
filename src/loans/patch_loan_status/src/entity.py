@@ -19,7 +19,9 @@ class PatchLoanStatus:
         new_status = body.get("status")
 
         if not new_status:
-            return STATUS_BAD_REQUEST, {"message": "Field 'status' is required"}
+            return STATUS_BAD_REQUEST, {
+                "message": "Field 'status' is required"
+            }
 
         if new_status not in LOAN_STATUSES:
             return STATUS_BAD_REQUEST, {

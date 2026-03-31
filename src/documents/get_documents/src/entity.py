@@ -38,12 +38,11 @@ class GetDocuments:
             and loan[0]["user_id"] != session_user_id
         ):
             return STATUS_FORBIDDEN, {
-                "message": "Clients can only view documents from their own loans"
+                "message": "Clients can only view documents"
+                " from their own loans"
             }
 
-        documents = self.queries.get_documents(
-            loan_id=loan_id, conn=self.conn
-        )
+        documents = self.queries.get_documents(loan_id=loan_id, conn=self.conn)
 
         if documents is None:
             return STATUS_SERVER_ERROR, {

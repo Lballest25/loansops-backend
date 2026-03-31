@@ -36,15 +36,15 @@ class PostUserQueries:
             int: The id of the newly created user.
             None: If an error occurs
         """
-        query: str = self.insert_user.query
-        params = {
-            "user_name": user_name,
-            "email": email,
-            "identification": identification,
-            "role": role,
-            "created_by": created_by,
-            "updated_by": updated_by,
-        }
+        query: str = self.insert_user.query  # type: ignore[attr-defined]
+        params = (
+            user_name,
+            email,
+            identification,
+            role,
+            created_by,
+            updated_by,
+        )
         resp = conn.execute_update(query, params)
         return resp
 
@@ -61,7 +61,9 @@ class PostUserQueries:
             dict: The user details if found.
             None: If the user is not found.
         """
-        query: str = self.get_user.query
-        params = {"email": email}
+        query: str = self.get_user.query  # type: ignore[attr-defined]
+        params = (email,)
         resp = conn.execute_query(query, params)
-        return resp
+        if resp and len(resp) > 0:
+            return resp[0]
+        return None

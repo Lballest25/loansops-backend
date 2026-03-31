@@ -13,15 +13,17 @@ class PutLoanQueries:
     def get_loan(
         self, loan_id: str, conn: DatabaseConnection
     ) -> Optional[list]:
-        query: str = self.get_loan.query
-        return conn.execute_query(query, {"loan_id": loan_id})
+        query: str = self.get_loan.query  # type: ignore[attr-defined]
+        params = (loan_id,)
+        return conn.execute_query(query, params)
 
     def update_loan(self, payload: dict, conn: DatabaseConnection) -> bool:
         updatable = {k: v for k, v in payload.items() if k != "loan_id"}
-        set_clause = ", ".join(f"{col} = %({col})s" for col in updatable)
+        set_clause = ", ".join(f"{col} = %s" for col in updatable)
         query = f"""
             UPDATE loans
             SET    {set_clause}
-            WHERE  loan_id = %(loan_id)s;
+            WHERE  loan_id = %s;
         """
-        return conn.execute_update(query, payload)
+        params = tuple(updatable.values()) + (payload["loan_id"],)
+        return conn.execute_update(query, params)

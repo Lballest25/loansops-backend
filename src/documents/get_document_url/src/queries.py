@@ -13,7 +13,6 @@ class GetDocumentUrlQueries:
     def get_document(
         self, document_id: str, loan_id: str, conn: DatabaseConnection
     ) -> Optional[list]:
-        query: str = self.get_document.query
-        return conn.execute_query(
-            query, {"document_id": document_id, "loan_id": loan_id}
-        )
+        query: str = self.get_document.query  # type: ignore[attr-defined]
+        params = (document_id, loan_id)
+        return conn.execute_query(query, params)

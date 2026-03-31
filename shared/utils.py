@@ -1,6 +1,5 @@
 import json
 import os
-import socket
 import smtplib
 from email.mime.text import MIMEText
 from typing import Any, Dict, Tuple
@@ -30,7 +29,8 @@ def get_response_handler(
             "Content-Type": "application/json",
             "Access-Control-Allow-Credentials": True,
             "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "OPTIONS, POST, GET, PUT, PATCH, DELETE",
+            "Access-Control-Allow-Methods": "OPTIONS, POST, GET, PUT,"
+            " PATCH, DELETE",
             "Access-Control-Allow-Headers": (
                 "Content-Type, X-Amz-Date, Authorization, "
                 "X-Api-Key, X-Amz-Security-Token"
@@ -113,9 +113,6 @@ def send_email(
     try:
         smtp_host = "smtp.gmail.com"
         smtp_port = 465
-        smtp_ipv4 = socket.getaddrinfo(
-            smtp_host, smtp_port, socket.AF_INET
-        )[0][4][0]
         sender_email = os.environ["SENDER_EMAIL"]
         sender_password = os.environ["SENDER_PASSWORD"]
 
@@ -125,19 +122,17 @@ def send_email(
         msg["From"] = sender_email
         msg["To"] = ", ".join(recipients)
 
-        with smtplib.SMTP_SSL(smtp_ipv4, smtp_port) as smtp:
+        with smtplib.SMTP_SSL(str(smtp_host), int(smtp_port)) as smtp:
             smtp.login(sender_email, sender_password)
             smtp.sendmail(sender_email, recipients, msg.as_string())
 
         return STATUS_CREATED_SUCCESS, {"message": "Email sent successfully"}
-    except Exception as exc:
+    except Exception as exc:  # pylint: disable=broad-except
         return STATUS_SERVER_ERROR, {"message": str(exc)}
 
 
 # ── WhatsApp (Twilio) ──────────────────────────────────────────
-def send_whatsapp(
-    to_number: str, body: str
-) -> Tuple[int, Dict[str, Any]]:
+def send_whatsapp(to_number: str, body: str) -> Tuple[int, Dict[str, Any]]:
     """
     Sends a WhatsApp message via Twilio.
 
@@ -163,7 +158,7 @@ def send_whatsapp(
             "message": "WhatsApp sent successfully",
             "sid": message.sid,
         }
-    except Exception as exc:
+    except Exception as exc:  # pylint: disable=broad-except
         return STATUS_SERVER_ERROR, {"message": str(exc)}
 
 

@@ -16,9 +16,7 @@ class GetDocumentUrl:
         self.conn = conn
         self.session_user = getattr(ctx, "user", {})
 
-    def generate_download_url(
-        self, loan_id: str, document_id: str
-    ) -> tuple:
+    def generate_download_url(self, loan_id: str, document_id: str) -> tuple:
         """
         Validates document ownership, then returns a presigned GET URL.
         CLIENTs can only download documents from their own loans.

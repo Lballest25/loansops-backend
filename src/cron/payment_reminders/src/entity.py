@@ -1,6 +1,10 @@
 import logging
 
-from shared.constants import REMINDER_DAYS_BEFORE, STATUS_OK, STATUS_SERVER_ERROR
+from shared.constants import (
+    REMINDER_DAYS_BEFORE,
+    STATUS_OK,
+    STATUS_SERVER_ERROR,
+)
 from shared.db_config import DatabaseConnection
 from shared.utils import send_email, send_whatsapp
 from src.cron.payment_reminders.src.queries import PaymentRemindersQueries
@@ -32,7 +36,10 @@ class PaymentReminders:
             }
 
         if not loans:
-            logger.info("No loans due in %d days. Nothing to send.", REMINDER_DAYS_BEFORE)
+            logger.info(
+                "No loans due in %d days. Nothing to send.",
+                REMINDER_DAYS_BEFORE,
+            )
             return STATUS_OK, {"message": "No reminders to send", "sent": 0}
 
         sent = 0
@@ -42,7 +49,7 @@ class PaymentReminders:
             try:
                 self._notify(loan)
                 sent += 1
-            except Exception as exc:
+            except Exception as exc:  # pylint: disable=broad-except
                 logger.error(
                     "Failed to notify loan %s: %s", loan.get("loan_id"), exc
                 )
@@ -51,12 +58,15 @@ class PaymentReminders:
                 )
 
         return STATUS_OK, {
-            "message": f"Reminders processed. Sent: {sent}, Errors: {len(errors)}",
+            "message": (
+                f"Reminders processed. Sent: {sent}, " f"Errors: {len(errors)}"
+            ),
             "sent": sent,
             "errors": errors,
         }
 
     def _notify(self, loan: dict) -> None:
+        """Send email and WhatsApp notification for a loan reminder."""
         template_data = {
             "user_name": loan["user_name"],
             "days_before": REMINDER_DAYS_BEFORE,
@@ -79,7 +89,8 @@ class PaymentReminders:
             whatsapp_body = (
                 f"Hola {loan['user_name']}, te recordamos que tienes un pago "
                 f"de {CURRENCY} {loan['amount']} programado para el "
-                f"{loan['next_payment_date']} (en {REMINDER_DAYS_BEFORE} días). "
+                f"{loan['next_payment_date']} "
+                f"(en {REMINDER_DAYS_BEFORE} días). "
                 f"Préstamo ID: {loan['loan_id']}."
             )
             send_whatsapp(to_number=loan["phone"], body=whatsapp_body)

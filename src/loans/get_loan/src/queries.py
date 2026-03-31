@@ -13,5 +13,6 @@ class GetLoanQueries:
     def get_loan(
         self, loan_id: str, conn: DatabaseConnection
     ) -> Optional[list]:
-        query: str = self.get_loan.query
-        return conn.execute_query(query, {"loan_id": loan_id})
+        query: str = self.get_loan.query  # type: ignore[attr-defined]
+        params = (loan_id,)
+        return conn.execute_query(query, params)

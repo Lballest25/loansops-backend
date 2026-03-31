@@ -13,8 +13,9 @@ class PostDocumentUrlQueries:
     def get_loan(
         self, loan_id: str, conn: DatabaseConnection
     ) -> Optional[list]:
-        query: str = self.get_loan.query
-        return conn.execute_query(query, {"loan_id": loan_id})
+        query: str = self.get_loan.query  # type: ignore[attr-defined]
+        params = (loan_id,)
+        return conn.execute_query(query, params)
 
     @sql_query_reader(base_dir, "insert_document.sql")
     def insert_document(
@@ -26,12 +27,6 @@ class PostDocumentUrlQueries:
         document_type: str,
         conn: DatabaseConnection,
     ) -> bool:
-        query: str = self.insert_document.query
-        params = {
-            "document_id": document_id,
-            "loan_id": loan_id,
-            "uploaded_by": uploaded_by,
-            "s3_key": s3_key,
-            "document_type": document_type,
-        }
+        query: str = self.insert_document.query  # type: ignore[attr-defined]
+        params = (document_id, loan_id, uploaded_by, s3_key, document_type)
         return conn.execute_update(query, params)

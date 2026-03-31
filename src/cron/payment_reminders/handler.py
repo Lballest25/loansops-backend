@@ -5,7 +5,9 @@ from shared.utils import get_response_handler
 from src.cron.payment_reminders.src.entity import PaymentReminders
 
 
-def lambda_handler(event: Dict[str, Any], context: object) -> Dict[str, Any]:
+def lambda_handler(
+    event: Dict[str, Any], context: object  # pylint: disable=unused-argument
+) -> Dict[str, Any]:  # pylint: disable=unused-argument
     """
     Triggered daily by EventBridge (cron).
     Finds loans whose next_payment_date is exactly 7 days away

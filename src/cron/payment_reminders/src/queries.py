@@ -13,5 +13,8 @@ class PaymentRemindersQueries:
     def get_loans_due_soon(
         self, days_before: int, conn: DatabaseConnection
     ) -> Optional[list]:
-        query: str = self.get_loans_due_soon.query
-        return conn.execute_query(query, {"days_before": days_before})
+        query: str = (
+            self.get_loans_due_soon.query  # type: ignore[attr-defined]
+        )
+        params = (days_before,)
+        return conn.execute_query(query, params)

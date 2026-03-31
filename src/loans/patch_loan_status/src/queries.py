@@ -13,8 +13,9 @@ class PatchLoanStatusQueries:
     def get_loan(
         self, loan_id: str, conn: DatabaseConnection
     ) -> Optional[list]:
-        query: str = self.get_loan.query
-        return conn.execute_query(query, {"loan_id": loan_id})
+        query: str = self.get_loan.query  # type: ignore[attr-defined]
+        params = (loan_id,)
+        return conn.execute_query(query, params)
 
     @sql_query_reader(base_dir, "patch_loan_status.sql")
     def update_status(
@@ -24,10 +25,6 @@ class PatchLoanStatusQueries:
         updated_by: str,
         conn: DatabaseConnection,
     ) -> bool:
-        query: str = self.update_status.query
-        params = {
-            "loan_id": loan_id,
-            "status": status,
-            "updated_by": updated_by,
-        }
+        query: str = self.update_status.query  # type: ignore[attr-defined]
+        params = (loan_id, status, updated_by)
         return conn.execute_update(query, params)

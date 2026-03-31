@@ -1,23 +1,26 @@
 import os
 import logging
+from typing import Any, Optional
 from mysql.connector import pooling, Error
 from dotenv import load_dotenv
 
 load_dotenv()
 
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
 logger = logging.getLogger(__name__)
 
 
 class DatabaseConnection:
-    def __init__(self):
+    def __init__(self) -> None:
         try:
             self.db_host = os.getenv("DB_HOST", "rds.amazonaws.com")
             self.db_user = os.getenv("DB_USER", "admin")
             self.db_password = os.getenv("DB_PASSWORD", "PASSWORD")
             self.db_database = os.getenv("DB_DATABASE", "DATABASE")
-            self.db_port = int(os.getenv("DB_PORT", 3306))
-            self.pool_size = int(os.getenv("DB_POOL_SIZE", 5))
+            self.db_port = int(os.getenv("DB_PORT", "3306"))
+            self.pool_size = int(os.getenv("DB_POOL_SIZE", "5"))
 
             self.connection_pool = pooling.MySQLConnectionPool(
                 pool_name="mypool",
@@ -29,13 +32,17 @@ class DatabaseConnection:
                 database=self.db_database,
                 port=self.db_port,
             )
-            logger.info("Connection pool created successfully with size %d", self.pool_size)
+            logger.info(
+                "Connection pool created successfully with size %d",
+                self.pool_size,
+            )
         except Error as err:
             logger.error("Error initializing the connection pool: %s", err)
 
-    def connect(self):
+    def connect(self) -> tuple[Any, Any]:
         """
-        Establishes a connection to the database from the connection pool and creates a cursor.
+        Establishes a connection to the database
+        from the connection pool and creates a cursor.
 
         Returns:
             tuple: (connection, cursor) or (None, None) if connection fails
@@ -49,7 +56,7 @@ class DatabaseConnection:
             logger.error("Error getting connection from pool: %s", err)
             return None, None
 
-    def close(self, connection, cursor):
+    def close(self, connection: Any, cursor: Any) -> None:
         """
         Closes the connection and cursor, returning the connection to the pool.
 
@@ -67,7 +74,9 @@ class DatabaseConnection:
         except Error as err:
             logger.error("Error closing connection or cursor: %s", err)
 
-    def execute_query(self, query, params=None):
+    def execute_query(
+        self, query: str, params: tuple = ()
+    ) -> Optional[list[dict[str, Any]]]:
         """
         Executes a SELECT query and fetches the results.
 
@@ -87,14 +96,16 @@ class DatabaseConnection:
             results = cursor.fetchall()
             logger.info("Query executed successfully: %s", cursor.statement)
             print(cursor.statement)
-            return results
+            if isinstance(results, list):
+                return results
+            return None
         except Error as err:
             logger.error("Error executing query: %s", err)
             return None
         finally:
             self.close(connection, cursor)
 
-    def execute_update(self, query, params=None):
+    def execute_update(self, query: str, params: tuple = ()) -> bool:
         """
         Executes an UPDATE query and commits the changes to the database.
 
@@ -111,7 +122,9 @@ class DatabaseConnection:
         try:
             cursor.execute(query, params)
             connection.commit()
-            logger.info("Update executed and committed successfully: %s", query)
+            logger.info(
+                "Update executed and committed successfully: %s", query
+            )
             return True
         except Error as err:
             logger.error("Error executing update: %s", err)

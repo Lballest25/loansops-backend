@@ -18,11 +18,6 @@ class GetUsersQueries:
         offset: int,
         conn: DatabaseConnection,
     ) -> Optional[List[dict]]:
-        query: str = self.get_users.query
-        params = {
-            "role": role,
-            "is_active": is_active,
-            "limit": limit,
-            "offset": offset,
-        }
+        query: str = self.get_users.query  # type: ignore[attr-defined]
+        params = (role, is_active, limit, offset)
         return conn.execute_query(query, params)

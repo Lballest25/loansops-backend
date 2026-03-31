@@ -13,12 +13,14 @@ class GetDocumentsQueries:
     def get_loan(
         self, loan_id: str, conn: DatabaseConnection
     ) -> Optional[list]:
-        query: str = self.get_loan.query
-        return conn.execute_query(query, {"loan_id": loan_id})
+        query: str = self.get_loan.query  # type: ignore[attr-defined]
+        params = (loan_id,)
+        return conn.execute_query(query, params)
 
     @sql_query_reader(base_dir, "get_documents.sql")
     def get_documents(
         self, loan_id: str, conn: DatabaseConnection
     ) -> Optional[list]:
-        query: str = self.get_documents.query
-        return conn.execute_query(query, {"loan_id": loan_id})
+        query: str = self.get_documents.query  # type: ignore[attr-defined]
+        params = (loan_id,)
+        return conn.execute_query(query, params)

@@ -50,7 +50,9 @@ class PostUser:
         validate_user = self.user_queries.get_user(email=email, conn=self.conn)
 
         if not validate_user:
-            return STATUS_SERVER_ERROR, {"message": "An error occurred while creating the user"}
+            return STATUS_SERVER_ERROR, {
+                "message": "An error occurred while creating the user"
+            }
 
         user_id_created = validate_user[0].get("user_id")
 
@@ -92,5 +94,10 @@ class PostUser:
             return STATUS_CREATED_SUCCESS, response_payload
         except Exception as e:
             return STATUS_SERVER_ERROR, {
-                "message": f"An error occurred while publishing the user data: {str(e)}"
+                "message": (
+                    (
+                        "An error occurred while publishing the user data: "
+                        f"{str(e)}"
+                    )
+                )
             }

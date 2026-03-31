@@ -18,11 +18,6 @@ class GetLoansQueries:
         offset: int,
         conn: DatabaseConnection,
     ) -> Optional[list]:
-        query: str = self.get_loans.query
-        params = {
-            "user_id": user_id,
-            "status": status,
-            "limit": limit,
-            "offset": offset,
-        }
+        query: str = self.get_loans.query  # type: ignore[attr-defined]
+        params = (user_id, status, limit, offset)
         return conn.execute_query(query, params)

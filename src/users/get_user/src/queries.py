@@ -13,6 +13,6 @@ class GetUserQueries:
     def get_user(
         self, user_id: str, conn: DatabaseConnection
     ) -> Optional[list]:
-        query: str = self.get_user.query
-        params = {"user_id": user_id}
+        query: str = self.get_user.query  # type: ignore[attr-defined]
+        params = (user_id,)
         return conn.execute_query(query, params)

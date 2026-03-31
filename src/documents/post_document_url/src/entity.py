@@ -36,7 +36,8 @@ class PostDocumentUrl:
 
         if not document_type or not file_name:
             return STATUS_BAD_REQUEST, {
-                "message": "Fields 'document_type' and 'file_name' are required"
+                "message": "Fields "
+                "'document_type' and 'file_name' are required"
             }
 
         if document_type not in DOCUMENT_TYPES:
@@ -54,7 +55,6 @@ class PostDocumentUrl:
 
         document_id = str(uuid.uuid4())
         uploaded_by = self.session_user.get("user_id")
-        # s3_key pattern: documents/{loan_id}/{document_type}/{document_id}_{file_name}
         s3_key = (
             f"documents/{loan_id}/{document_type}/"
             f"{document_id}_{file_name}"

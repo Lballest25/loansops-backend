@@ -5,9 +5,12 @@ from shared.queries.queries import SharedQueries
 from shared.utils import get_response_handler
 
 
-def user_session(func):
+from typing import Callable, Any
+
+
+def user_session(func: Callable) -> Callable:
     @wraps(func)
-    def wrapper(request, context, *args, **kwargs):
+    def wrapper(request: Any, context: Any, *args: Any, **kwargs: Any) -> Any:
         claims = request["requestContext"]["authorizer"]["claims"]
         email = claims.get("email")
 
@@ -20,7 +23,9 @@ def user_session(func):
         user_data = SharedQueries().get_user(email, conn)
 
         if not user_data:
-            return get_response_handler(STATUS_BAD_REQUEST, {"message": "User not found"})
+            return get_response_handler(
+                STATUS_BAD_REQUEST, {"message": "User not found"}
+            )
 
         setattr(context, "user", user_data)
         setattr(context, "conn", conn)

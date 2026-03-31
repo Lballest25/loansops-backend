@@ -26,7 +26,8 @@ class SendNotification:
         Body params:
             user_id  – target user
             message  – notification text
-            subject  – email subject (optional, defaults to 'Notificación LoanOps')
+            subject  – email subject
+            (optional, defaults to 'Notificación LoanOps')
             channel  – 'email' | 'whatsapp' | 'both'  (default 'both')
         """
         user_id = body.get("user_id")
